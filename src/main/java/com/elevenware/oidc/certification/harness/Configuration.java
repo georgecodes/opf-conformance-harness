@@ -1,5 +1,6 @@
 package com.elevenware.oidc.certification.harness;
 
+import com.elevenware.oidc4j.lib.commons.SecretUtils;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -109,11 +110,15 @@ public class Configuration {
         config.adminIssuer = System.getenv("ADMIN_ISSUER");
         config.defaultClientId = System.getenv("DEFAULT_CLIENT_ID");
         config.defaultClientSecret = System.getenv("DEFAULT_CLIENT_SECRET");
+        config.defaultClientSecret = SecretUtils.bcrypt(config.defaultClientSecret);
         config.adminClientId = System.getenv("ADMIN_CLIENT_ID");
         config.adminClientSecret = System.getenv("ADMIN_CLIENT_SECRET");
+        config.adminClientSecret = SecretUtils.bcrypt(config.adminClientSecret);
         config.adminGroup = System.getenv("ADMIN_GROUP");
         config.userName = System.getenv("USER_NAME");
         config.email = System.getenv("EMAIL");
+        boolean useEnv = config.verify();
+        System.out.printf("Using environment variables: %s\n", useEnv);
         return config.verify() ? config : null;
     }
 
@@ -122,10 +127,10 @@ public class Configuration {
         config.defaultIssuer = "https://auth.conformance.elevenware.com";
         config.adminIssuer = "https://auth.admin.conformance.elevenware.com";
         config.defaultClientId = "conformance_suite";
-        config.defaultClientSecret = "abdce12345";
+        config.defaultClientSecret = SecretUtils.bcrypt("abcde12345");
         config.adminClientId = "conformance_suite_admin";
-        config.adminClientSecret = "abdce12345";
-        config.adminGroup = "conformance_suite_admins";
+        config.adminClientSecret = SecretUtils.bcrypt("abcde12345");
+        config.adminGroup = "conformance-admins";
         config.userName = "George McIntosh";
         config.email = "george@elevenware.com";
         return config;

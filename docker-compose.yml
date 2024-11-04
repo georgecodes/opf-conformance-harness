@@ -10,10 +10,10 @@ services:
       - DEFAULT_ISSUER=https://auth.conformance.elevenware.com
       - ADMIN_ISSUER=https://auth.admin.conformance.elevenware.com
       - DEFAULT_CLIENT_ID=conformance_suite
-      - DEFAULT_CLIENT_SECRET=$2a$12$Cu/c/70j3JrjhiDOeHZkP.N/ID7lpyJoOqWIWJk8TUDQ4q2xyozP2
+      - DEFAULT_CLIENT_SECRET=abcde12345
       - ADMIN_CLIENT_ID=conformance_suite_admin
-      - ADMIN_CLIENT_SECRET=$2a$12$Cu/c/70j3JrjhiDOeHZkP.N/ID7lpyJoOqWIWJk8TUDQ4q2xyozP2
-      - ADMIN_GROUP=conformance_suite_admins
+      - ADMIN_CLIENT_SECRET=abcde12345
+      - ADMIN_GROUP=conformance-admins
       - USER_NAME=George McIntosh
       - EMAIL=george@elevenware.com
   rproxy:
