@@ -1,6 +1,5 @@
 package com.elevenware.oidc.certification.harness;
 
-import com.elevenware.oidc4j.lib.commons.SecretUtils;
 import com.elevenware.oidc4j.lib.grants.GrantTypes;
 import com.elevenware.oidc4j.lib.provider.ClaimsProvider;
 import com.elevenware.oidc4j.lib.provider.OIDCProvider;
@@ -34,6 +33,22 @@ public class ConformanceHarnessApp {
 
     public static void main(String[] args) throws NoSuchAlgorithmException {
 
+        Configuration configuration = null;
+        if(System.getProperty("oidc.config") != null) {
+            configuration = Configuration.fromFile(System.getProperty("oidc.config"));
+        }
+
+        if(System.getenv("OIDC_CONFIG_FILE") != null) {
+            configuration = Configuration.fromFile(System.getenv("OIDC_CONFIG"));
+        }
+
+        if(configuration == null) {
+            configuration = Configuration.fromEnv();
+        }
+        if(configuration == null) {
+            configuration = Configuration.defaultConfiguration();
+        }
+
         int port = 9090;
         JavalinJackson jsonMapper = new JavalinJackson();
         jsonMapper.getMapper()
@@ -43,40 +58,44 @@ public class ConformanceHarnessApp {
             conf.jsonMapper(jsonMapper);
         });
 
+        BasicUser user = new BasicUser(configuration.getEmail(), configuration.getUserName());
+
         OAuthClient defaultClient = OAuthClient.builder()
-                .clientId("conformance_suite")
-                .clientSecret(SecretUtils.bcrypt("abcde12345"))
+                .clientId(configuration.getDefaultClientId())
+                .clientSecret(configuration.getDefaultClientSecret())
                 .grantTypes(Set.of(GrantTypes.AUTHORIZATION_CODE))
                 .build();
 
         OAuthClient adminClient = OAuthClient.builder()
-                .clientId("conformance_suite_admin")
-                .clientSecret(SecretUtils.bcrypt("abcde12345"))
+                .clientId(configuration.getAdminClientId())
+                .clientSecret(configuration.getAdminClientSecret())
                 .grantTypes(Set.of(GrantTypes.AUTHORIZATION_CODE))
                 .build();
 
-        createProvider(javalin, "http://auth.conformance.elevenware.com:9090", "", defaultClient, (JWTClaimsSet.Builder claimsBuilder) -> {});
-        createProvider(javalin, "http://auth.conformance.elevenware.com:9090", "/admin", adminClient, (JWTClaimsSet.Builder claimsBuilder) -> {
-            claimsBuilder.claim("groups", List.of("conformance-admins"));
+        OIDCProvider defaultProvider = createProvider( configuration.getDefaultIssuer(), defaultClient, user, (JWTClaimsSet.Builder claimsBuilder) -> {
+        });
+        final String adminGroup = configuration.getAdminGroup();
+        OIDCProvider adminProvider = createProvider(configuration.getAdminIssuer(), adminClient, user, (JWTClaimsSet.Builder claimsBuilder) -> {
+            claimsBuilder.claim("groups", List.of(adminGroup));
         });
 
+        ConformanceHarness harness = new ConformanceHarness(javalin, defaultProvider, adminProvider, user);
         javalin.start(port);
 
     }
 
-    private static void createProvider(Javalin javalin, String issuer, String sub, OAuthClient client, ClaimsProvider claimsProvider) throws NoSuchAlgorithmException {
+    private static OIDCProvider createProvider(String issuer, OAuthClient client, BasicUser user, ClaimsProvider claimsProvider) throws NoSuchAlgorithmException {
         KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
         KeyPair keyPair = keyPairGenerator.generateKeyPair();
 
         ProviderConfig config = ProviderConfig.builder()
-                .baseUrl(issuer.concat(sub))
+                .baseUrl(issuer)
                 .keyPair(keyPair)
                 .build();
         OIDCProvider provider = new OIDCProvider(config);
         InMemoryClientRepository clientRepository = new InMemoryClientRepository();
         AuthorizationRepository authorizationRepository = new InMemoryAuthorizationRepository();
         UserRepository userRepository = new InMemoryUserRepository();
-        BasicUser user = new BasicUser("George McIntosh", "george.mcintosh@raidiam.com");
         userRepository.saveUser(user);
         GrantRepository grantRepository = new InMemoryGrantRepository();
         clientRepository.addClient(client);
@@ -91,7 +110,7 @@ public class ConformanceHarnessApp {
                 new GrantTypeAcceptableValidator(clientRepository),
                 new GrantTypePresentValidator()
         ));
-        new ConformanceHarness(javalin, provider, sub, user);
+        return provider;
     }
 
 }

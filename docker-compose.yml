@@ -1,0 +1,25 @@
+version: '3'
+services:
+  harness:
+    build:
+        context: .
+        dockerfile: Dockerfile
+    ports:
+      - 9090:9090
+    environment:
+      - DEFAULT_ISSUER=https://auth.conformance.elevenware.com
+      - ADMIN_ISSUER=https://auth.admin.conformance.elevenware.com
+      - DEFAULT_CLIENT_ID=conformance_suite
+      - DEFAULT_CLIENT_SECRET=abcde12345
+      - ADMIN_CLIENT_ID=conformance_suite_admin
+      - ADMIN_CLIENT_SECRET=abcde12345
+      - ADMIN_GROUP=conformance-admins
+      - USER_NAME=George McIntosh
+      - EMAIL=george@elevenware.com
+  rproxy:
+    image: nginx:latest
+    ports:
+      - "443:443"
+    volumes:
+        - ./rproxy/nginx.conf:/etc/nginx/conf.d/default.conf
+        - ./rproxy/tls:/etc/nginx/certs/
