@@ -1,6 +1,5 @@
 package com.elevenware.oidc.certification.harness;
 
-import com.elevenware.oidc4j.lib.commons.SecretUtils;
 import com.elevenware.oidc4j.lib.grants.GrantTypes;
 import com.elevenware.oidc4j.lib.provider.ClaimsProvider;
 import com.elevenware.oidc4j.lib.provider.OIDCProvider;
@@ -34,6 +33,22 @@ public class ConformanceHarnessApp {
 
     public static void main(String[] args) throws NoSuchAlgorithmException {
 
+        Configuration configuration = null;
+        if(System.getProperty("oidc.config") != null) {
+            configuration = Configuration.fromFile(System.getProperty("oidc.config"));
+        }
+
+        if(System.getenv("OIDC_CONFIG_FILE") != null) {
+            configuration = Configuration.fromFile(System.getenv("OIDC_CONFIG"));
+        }
+
+        if(configuration == null) {
+            configuration = Configuration.fromEnv();
+        }
+        if(configuration == null) {
+            configuration = Configuration.defaultConfiguration();
+        }
+
         int port = 9090;
         JavalinJackson jsonMapper = new JavalinJackson();
         jsonMapper.getMapper()
@@ -43,24 +58,25 @@ public class ConformanceHarnessApp {
             conf.jsonMapper(jsonMapper);
         });
 
-        BasicUser user = new BasicUser("George McIntosh", "george.mcintosh@raidiam.com");
+        BasicUser user = new BasicUser(configuration.getEmail(), configuration.getUserName());
 
         OAuthClient defaultClient = OAuthClient.builder()
-                .clientId("conformance_suite")
-                .clientSecret(SecretUtils.bcrypt("abcde12345"))
+                .clientId(configuration.getDefaultClientId())
+                .clientSecret(configuration.getDefaultClientSecret())
                 .grantTypes(Set.of(GrantTypes.AUTHORIZATION_CODE))
                 .build();
 
         OAuthClient adminClient = OAuthClient.builder()
-                .clientId("conformance_suite_admin")
-                .clientSecret(SecretUtils.bcrypt("abcde12345"))
+                .clientId(configuration.getAdminClientId())
+                .clientSecret(configuration.getAdminClientSecret())
                 .grantTypes(Set.of(GrantTypes.AUTHORIZATION_CODE))
                 .build();
 
-        OIDCProvider defaultProvider = createProvider( "https://auth.conformance.elevenware.com", defaultClient, user, (JWTClaimsSet.Builder claimsBuilder) -> {
+        OIDCProvider defaultProvider = createProvider( configuration.getDefaultIssuer(), defaultClient, user, (JWTClaimsSet.Builder claimsBuilder) -> {
         });
-        OIDCProvider adminProvider = createProvider("https://auth.admin.conformance.elevenware.com", adminClient, user, (JWTClaimsSet.Builder claimsBuilder) -> {
-            claimsBuilder.claim("groups", List.of("conformance-admins"));
+        final String adminGroup = configuration.getAdminGroup();
+        OIDCProvider adminProvider = createProvider(configuration.getAdminIssuer(), adminClient, user, (JWTClaimsSet.Builder claimsBuilder) -> {
+            claimsBuilder.claim("groups", List.of(adminGroup));
         });
 
         ConformanceHarness harness = new ConformanceHarness(javalin, defaultProvider, adminProvider, user);

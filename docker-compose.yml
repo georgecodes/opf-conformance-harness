@@ -1,11 +1,21 @@
 version: '3'
 services:
-#  mongodb:
-#    image: mongo:7.0.14
-#    volumes:
-#      - ./mongo/data:/data/db:delegated
-#    ports:
-#      - "27017:27017"
+  harness:
+    build:
+        context: .
+        dockerfile: Dockerfile
+    ports:
+      - 9090:9090
+    environment:
+      - DEFAULT_ISSUER=https://auth.conformance.elevenware.com
+      - ADMIN_ISSUER=https://auth.admin.conformance.elevenware.com
+      - DEFAULT_CLIENT_ID=conformance_suite
+      - DEFAULT_CLIENT_SECRET=$2a$12$Cu/c/70j3JrjhiDOeHZkP.N/ID7lpyJoOqWIWJk8TUDQ4q2xyozP2
+      - ADMIN_CLIENT_ID=conformance_suite_admin
+      - ADMIN_CLIENT_SECRET=$2a$12$Cu/c/70j3JrjhiDOeHZkP.N/ID7lpyJoOqWIWJk8TUDQ4q2xyozP2
+      - ADMIN_GROUP=conformance_suite_admins
+      - USER_NAME=George McIntosh
+      - EMAIL=george@elevenware.com
   rproxy:
     image: nginx:latest
     ports:
