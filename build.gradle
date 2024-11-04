@@ -1,0 +1,73 @@
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'maven-publish'
+    apply plugin: 'signing'
+
+    group = 'com.elevenware.conformance.harness'
+    version = '0.0.1-SNAPSHOT'
+
+    repositories {
+        mavenCentral()
+    }
+
+    java {
+        withSourcesJar()
+        withJavadocJar()
+    }
+
+    publishing {
+        publications {
+            maven(MavenPublication) {
+                from components.java
+
+                pom {
+                    name = 'opf-conformance-harness'
+                    description = 'A simple OIDC provider for logging into conformance suites'
+                    url = 'https://github.com/georgecodes/opf-conformance-harness'
+
+                    licenses {
+                        license {
+                            name = 'The Apache License, Version 2.0'
+                            url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                        }
+                    }
+                    groupId = "com.elevenware.conformance.harness"
+                    version = version
+                    developers {
+                        developer {
+                            id = 'georgecodes'
+                            name = 'George McIntosh'
+                            email = 'george@elevenware.com'
+                        }
+                    }
+                    scm {
+                        connection = 'scm:git:https://github.com/georgecodes/opf-conformance-harness.git'
+                        developerConnection = 'scm:git:https://github.com/georgecodes/opf-conformance-harness.git'
+                        url = 'https://github.com/georgecodes/opf-conformance-harness'
+                    }
+                }
+            }
+        }
+        repositories {
+            maven {
+
+                def releasesRepoUrl = 'https://oss.sonatype.org/service/local/staging/deploy/maven2/'
+                def snapshotsRepoUrl = 'https://oss.sonatype.org/content/repositories/snapshots/'
+                url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+                name = 'nexus'
+                credentials(PasswordCredentials)
+            }
+        }
+
+    }
+
+    jar {
+        manifest.attributes provider: 'gradle'
+    }
+
+    signing {
+        useGpgCmd()
+        sign publishing.publications.maven
+    }
+
+}
