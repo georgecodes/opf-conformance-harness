@@ -27,19 +27,23 @@ import java.util.Set;
 
 public class HarnessOidcController {
 
-    private final OIDCProvider provider;
+    private final OIDCProvider defaultProvider;
+    private final OIDCProvider adminProvider;
     private final OauthUser user;
 
-    public HarnessOidcController(OIDCProvider provider, OauthUser user) {
-        this.provider = provider;
+    public HarnessOidcController(OIDCProvider defaultProvider, OIDCProvider adminProvider, OauthUser user) {
+        this.defaultProvider = defaultProvider;
+        this.adminProvider = adminProvider;
         this.user = user;
     }
 
     public void discovery(Context context) {
+        OIDCProvider provider = context.attribute("PROVIDER");
         context.json(provider.getDiscoveryDocument());
     }
 
     public void jwks(Context context) {
+        OIDCProvider provider = context.attribute("PROVIDER");
         KeyPair keyPair = provider.getConfig().getKeyPair();
         JWK jwk = new RSAKey.Builder((RSAPublicKey) keyPair.getPublic())
                 .keyUse(KeyUse.SIGNATURE)
@@ -57,6 +61,7 @@ public class HarnessOidcController {
     }
 
     public void token(Context context) {
+        OIDCProvider provider = context.attribute("PROVIDER");
         ClientSecretPost clientAuth = getClientSecretPost(context);
         String grantTypeId = context.formParam("grant_type");
         Map<String, List<String>> params = context.formParamMap();
@@ -83,6 +88,7 @@ public class HarnessOidcController {
     }
 
     public void frontChannelAuthorize(Context context) {
+        OIDCProvider provider = context.attribute("PROVIDER");
         Map<String, List<String>> params = context.queryParamMap();
         String authCode = RandomStringUtils.randomAlphanumeric(16);
         AuthorizationRequest authorizationRequest = AuthorizationRequest.builder()
@@ -108,6 +114,7 @@ public class HarnessOidcController {
     }
 
     private ClientSecretPost getClientSecretPost(Context context) {
+        OIDCProvider provider = context.attribute("PROVIDER");
         String clientAuth = context.header("Authorization");
         String clientId = context.formParam("client_id");
         String clientSecret = context.formParam("client_secret");
@@ -124,5 +131,6 @@ public class HarnessOidcController {
         }
         return new ClientSecretPost(clientId, clientSecret);
     }
+
 
 }
