@@ -18,10 +18,5 @@ jobs:
           java-version: 17
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
-        with:
-          distribution: 'temurin'
-          java-version: 17
-      - name: versio
-        run: java -version
       - name: Build harness
         run: ./gradlew clean build
