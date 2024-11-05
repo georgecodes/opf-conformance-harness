@@ -25,6 +25,8 @@ import io.javalin.json.JavalinJackson;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.util.List;
 import java.util.Set;
 
@@ -71,11 +73,18 @@ public class ConformanceHarnessApp {
                 .clientSecret(configuration.getAdminClientSecret())
                 .grantTypes(Set.of(GrantTypes.AUTHORIZATION_CODE))
                 .build();
-
-        OIDCProvider defaultProvider = createProvider( configuration.getDefaultIssuer(), defaultClient, user, (JWTClaimsSet.Builder claimsBuilder) -> {
+        String defaultPublicKey = configuration.getDefaultPublicKey();
+        String defaultPrivateKey = configuration.getDefaultPrivateKey();
+        String adminPublicKey = configuration.getAdminPublicKey();
+        String adminPrivateKey = configuration.getAdminPrivateKey();
+        OIDCProvider defaultProvider = createProvider( configuration.getDefaultIssuer(),
+                defaultClient, user, defaultPublicKey, defaultPrivateKey,
+                (JWTClaimsSet.Builder claimsBuilder) -> {
         });
         final String adminGroup = configuration.getAdminGroup();
-        OIDCProvider adminProvider = createProvider(configuration.getAdminIssuer(), adminClient, user, (JWTClaimsSet.Builder claimsBuilder) -> {
+        OIDCProvider adminProvider = createProvider(configuration.getAdminIssuer(), adminClient, user,
+                adminPublicKey, adminPrivateKey,
+                (JWTClaimsSet.Builder claimsBuilder) -> {
             claimsBuilder.claim("groups", List.of(adminGroup));
         });
 
@@ -84,9 +93,10 @@ public class ConformanceHarnessApp {
 
     }
 
-    private static OIDCProvider createProvider(String issuer, OAuthClient client, BasicUser user, ClaimsProvider claimsProvider) throws NoSuchAlgorithmException {
-        KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
-        KeyPair keyPair = keyPairGenerator.generateKeyPair();
+    private static OIDCProvider createProvider(String issuer, OAuthClient client, BasicUser user, String publicKey, String privateKey, ClaimsProvider claimsProvider) throws NoSuchAlgorithmException {
+
+        KeyPair keyPair = loadOrCreate(publicKey, privateKey);
+
 
         ProviderConfig config = ProviderConfig.builder()
                 .baseUrl(issuer)
@@ -111,6 +121,16 @@ public class ConformanceHarnessApp {
                 new GrantTypePresentValidator()
         ));
         return provider;
+    }
+
+    private static KeyPair loadOrCreate(String publicKeyString, String privateKeyString) throws NoSuchAlgorithmException {
+        if(publicKeyString != null && privateKeyString != null) {
+            PublicKey publicKey = KeyUtils.publicKeyFromPem(publicKeyString);
+            PrivateKey privateKey = KeyUtils.privateKeyFromPem(privateKeyString);
+            return new KeyPair(publicKey, privateKey);
+        }
+        KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
+        return keyPairGenerator.generateKeyPair();
     }
 
 }
