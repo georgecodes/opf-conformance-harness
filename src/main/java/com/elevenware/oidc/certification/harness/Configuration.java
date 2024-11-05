@@ -62,16 +62,16 @@ public class Configuration {
         String defaultPublicKey = System.getenv("DEFAULT_PUBLIC_KEY");
         String defaultPrivateKey = System.getenv("DEFAULT_PRIVATE_KEY");
         if(defaultPublicKey != null && defaultPrivateKey != null) {
-            PublicKey publicKey = KeyUtils.publicKeyFromPem(defaultPublicKey);
-            PrivateKey privateKey = KeyUtils.privateKeyFromPem(defaultPrivateKey);
+            PublicKey publicKey = KeyUtils.publicKeyFromFile(defaultPublicKey);
+            PrivateKey privateKey = KeyUtils.privateKeyFromFile(defaultPrivateKey);
             KeyPair keyPair = new KeyPair(publicKey, privateKey);
             defaultProvider.keyPair = keyPair;
         }
         String adminPublicKey = System.getenv("ADMIN_PUBLIC_KEY");
         String adminPrivateKey = System.getenv("ADMIN_PRIVATE_KEY");
         if(defaultPublicKey != null && defaultPrivateKey != null) {
-            PublicKey publicKey = KeyUtils.publicKeyFromPem(adminPublicKey);
-            PrivateKey privateKey = KeyUtils.privateKeyFromPem(adminPrivateKey);
+            PublicKey publicKey = KeyUtils.publicKeyFromFile(adminPublicKey);
+            PrivateKey privateKey = KeyUtils.privateKeyFromFile(adminPrivateKey);
             KeyPair keyPair = new KeyPair(publicKey, privateKey);
             adminProvider.keyPair = keyPair;
         }

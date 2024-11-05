@@ -1,5 +1,9 @@
 package com.elevenware.oidc.certification.harness;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
@@ -49,4 +53,21 @@ public class KeyUtils {
 
     }
 
+    public static PublicKey publicKeyFromFile(String path) {
+        try {
+            String string = Files.readString(Path.of(path), StandardCharsets.UTF_8);
+            return publicKeyFromPem(string);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static PrivateKey privateKeyFromFile(String path) {
+        try {
+            String string = Files.readString(Path.of(path), StandardCharsets.UTF_8);
+            return privateKeyFromPem(string);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
