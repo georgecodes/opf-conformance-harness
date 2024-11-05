@@ -109,7 +109,10 @@ public class ConformanceHarnessApp {
         provider.setGrantRepository(grantRepository);
         provider.setUserRepository(userRepository);
         provider.addClaimsProvider((JWTClaimsSet.Builder claimsBuilder) -> {
-            claimsBuilder.claim("group", List.of(providerConfig.getGroup()));
+            if(providerConfig.getGroup() != null) {
+                claimsBuilder.claim("groups", List.of(providerConfig.getGroup()));
+            }
+
         });
 
         provider.setTokenRequestValidators(List.of(
