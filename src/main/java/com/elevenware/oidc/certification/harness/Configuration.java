@@ -21,6 +21,10 @@ public class Configuration {
     private String adminClientSecret;
     private String userName;
     private String email;
+    private String defaultPublicKey;
+    private String defaultPrivateKey;
+    private String adminPublicKey;
+    private String adminPrivateKey;
 
     public String getDefaultIssuer() {
         return defaultIssuer;
@@ -94,6 +98,38 @@ public class Configuration {
         this.email = email;
     }
 
+    public String getDefaultPublicKey() {
+        return defaultPublicKey;
+    }
+
+    public void setDefaultPublicKey(String defaultPublicKey) {
+        this.defaultPublicKey = defaultPublicKey;
+    }
+
+    public String getDefaultPrivateKey() {
+        return defaultPrivateKey;
+    }
+
+    public void setDefaultPrivateKey(String defaultPrivateKey) {
+        this.defaultPrivateKey = defaultPrivateKey;
+    }
+
+    public String getAdminPublicKey() {
+        return adminPublicKey;
+    }
+
+    public void setAdminPublicKey(String adminPublicKey) {
+        this.adminPublicKey = adminPublicKey;
+    }
+
+    public String getAdminPrivateKey() {
+        return adminPrivateKey;
+    }
+
+    public void setAdminPrivateKey(String adminPrivateKey) {
+        this.adminPrivateKey = adminPrivateKey;
+    }
+
     public boolean verify() {
         if(defaultIssuer != null && adminIssuer != null
                 && adminGroup != null && defaultClientId != null
@@ -146,6 +182,7 @@ public class Configuration {
         }
         return configuration;
     }
+
 
 
 }
