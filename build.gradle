@@ -118,3 +118,6 @@ task fatJar(type: Jar) {
     with jar
 }
 
+tasks.named('test') {
+    useJUnitPlatform()
+}

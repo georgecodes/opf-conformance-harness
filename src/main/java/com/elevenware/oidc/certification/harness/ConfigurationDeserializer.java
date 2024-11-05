@@ -33,6 +33,23 @@ public class ConfigurationDeserializer extends StdDeserializer<Configuration> {
         configuration.setUserName(user.get("name").asText());
         configuration.setEmail(user.get("email").asText());
 
+        processKeys(node, configuration);
+
         return configuration;
+    }
+
+    private void processKeys(JsonNode node, Configuration configuration) {
+        JsonNode defaultProvider = node.get("providers").get("default");
+        JsonNode adminProvider = node.get("providers").get("admin");
+        if(defaultProvider.has("keys")) {
+            JsonNode keys = defaultProvider.get("keys");
+            configuration.setDefaultPublicKey(keys.get("public").asText());
+            configuration.setDefaultPrivateKey(keys.get("private").asText());
+        }
+        if(adminProvider.has("keys")) {
+            JsonNode keys = adminProvider.get("keys");
+            configuration.setDefaultPublicKey(keys.get("public").asText());
+            configuration.setDefaultPrivateKey(keys.get("private").asText());
+        }
     }
 }

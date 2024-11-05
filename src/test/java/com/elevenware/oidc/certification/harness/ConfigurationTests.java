@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.PrivateKey;
+import java.security.PublicKey;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -41,11 +43,36 @@ public class ConfigurationTests {
 
     }
 
+    @Test
+    void canLoadKeys() {
+
+        String filename = configDir.resolve("config_pem_keys.json").toString();
+        Configuration configuration = Configuration.fromFile(filename);
+
+        assertNotNull(configuration);
+
+        String defaultPublicKey = configuration.getDefaultPublicKey();
+        String defaultPrivateKey = configuration.getDefaultPrivateKey();
+
+        assertNotNull(defaultPublicKey);
+        PublicKey publicKey = KeyUtils.publicKeyFromPem(defaultPublicKey);
+
+        assertNotNull(defaultPrivateKey);
+        PrivateKey privateKey = KeyUtils.privateKeyFromPem(defaultPrivateKey);
+
+
+    }
+
     @BeforeAll
     static void setup() throws IOException {
         Path path = Paths.get("src/test/resources/config.json");
         Path configFile = configDir.resolve("config.json");
         Files.copy(path, configFile);
+
+        path = Paths.get("src/test/resources/config_pem_keys.json");
+        configFile = configDir.resolve("config_pem_keys.json");
+        Files.copy(path, configFile);
+
     }
 
 }

@@ -1,0 +1,24 @@
+{
+  "providers": {
+    "default": {
+      "issuer": "https://auth.conformance.elevenware.com",
+      "clientId": "conformance_suite",
+      "clientSecret": "$2a$12$Cu/c/70j3JrjhiDOeHZkP.N/ID7lpyJoOqWIWJk8TUDQ4q2xyozP2",
+      "keys": {
+        "public": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAjEcHAnLzH69+iguDl4Om\nhoMta32sDw2/7EODUMWSRYnc7Af3WOLGLRcE9BiOkSjk9s+cRx8aft+I4vO898Rv\nJG4F/ZqWj6uwsND3/D7/IKjrTsYY7MXXU72SZvynMFqQjkg5LgWDwnVweB+HlDUe\nePx4ao+e3Pyr+aYQzPzH0EkSbhDf6h6kpzSDk6RtkF1fvSmf6jSlp4VMQkeJ/wLA\ntYHD41yGXORuBEOjfNAC0iNG0/mpc5yjzqCyhDJKni9KkHP4D7o93oqFW6IRAIBO\nOAizfa360m5yEst3npd3BbHU/phii13Oh9lP20sKxvz20NhbKr1yONRYI+zr6/BI\nPQIDAQAB\n-----END PUBLIC KEY-----\n",
+        "private": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQCMRwcCcvMfr36K\nC4OXg6aGgy1rfawPDb/sQ4NQxZJFidzsB/dY4sYtFwT0GI6RKOT2z5xHHxp+34ji\n87z3xG8kbgX9mpaPq7Cw0Pf8Pv8gqOtOxhjsxddTvZJm/KcwWpCOSDkuBYPCdXB4\nH4eUNR54/Hhqj57c/Kv5phDM/MfQSRJuEN/qHqSnNIOTpG2QXV+9KZ/qNKWnhUxC\nR4n/AsC1gcPjXIZc5G4EQ6N80ALSI0bT+alznKPOoLKEMkqeL0qQc/gPuj3eioVb\nohEAgE44CLN9rfrSbnISy3eel3cFsdT+mGKLXc6H2U/bSwrG/PbQ2FsqvXI41Fgj\n7Ovr8Eg9AgMBAAECggEAMaKyTsII2BXbYxJG6lZZlrAU4ruRpbP6TKno7awzISry\ngowhEBESCYNjK9ICpEeBmPmGNT5CvFDxWUjgfRVDNHM/6GgKTWT1fOM8VEOgN9i9\nhl6fFCy/D/D8vDc7G2d4TfgtT2UBJc4zUTXq3dzb3viKzT3rewtm+Muzlyz8sOyc\nHNNY0bBCTjdg1+AfvJLTaGiod4zhxOdM7dGylRt3NTG7C5cse2t+YqnM+Yi8BvNm\nN8VPGOIJc8g7f57dMc/o3bQFE6P4OEBQTcpeGoqfgweLSqE68Y8JdtR4J/txztQF\nmjBjV2mta4P9RVzqS7ypLLHRSGQFmmYCo3H5w3nZSwKBgQC/dryX/ovsuj2dn0Ji\n6/AjFy/OyQPwJkwX9FP1mYO/zaWY6vbhGDfiX+WRoBbcUyQA4B+E5eIKFzaAQCXk\ngW9zfxTNAYMFzeWE2P51up4JJnfXLrDLGANqX9d8uNmOG9qO5eaNzbR1KS3oSz4W\nWu2m2w6xm/94V1oz2VdSTykpkwKBgQC7j3WOz1ET6ZFZ2CIglMFm8CCWxGN4dAwM\nlrHaCSDVU1okaMg0iwjN9ywreFgvNxkMb1sikeZ9Xnv46tcE/v3Gb4Xw9soW+5eF\nratJIRTNa8p42hpOykP2Cvi3VhsmzaMNZTcEN+Vcjt5xQcoonXZDEU3BZotCw6iB\n1bmGlh6o7wKBgCbGDPta+Us/jCrXjcIqtb7lezENVFbV6qMPP9GE/UFijB6jtstu\n9CJL+Vm8aeTEkY371WY8h8IzYT4nv4S/Ear6GWRK4hXS1KBKsX12BXsk5zAUrIj0\nm/x23FTNuoEk8uXtePtOpTT02e8pDbHJSEd6JUeip+HfDs1hPmXU0ikxAoGAPFTs\nMrDbWrViDO1qJOLUx2DsirLHcGKb0ZzTvtf62MQEFfwikkw6283rRlxiuWVWyFo1\njYwzARbYd/xKiA/h3+fVxOoNnZD2b4iqtU5P27gVnAREPB3x+H4U/RxUhYnWLiPl\nq5SzUa+fO/02oxPri61QPqrWlvZLCOCP2gwF9r8CgYArlN7YyCxKei69gOBi6K8m\ndvp9qlPQE3l1xaVHzz/EvDH7PFcOsS4IZB5IJRloJME90txHQmSSmeQonwlCguo/\nJH+ZnT+T+TJgHan+ejBQWN4SQaNdDaLb0Lt16m67js8TkhWj9JPH9ASBFdk+RZRS\nax9GBVRl8hu1pkN2gR5LeA==\n-----END PRIVATE KEY-----\n"
+      }
+    },
+    "admin": {
+      "issuer": "https://auth.admin.conformance.elevenware.com",
+      "clientId": "conformance_suite_admin",
+      "clientSecret": "$2a$12$Cu/c/70j3JrjhiDOeHZkP.N/ID7lpyJoOqWIWJk8TUDQ4q2xyozP2",
+      "group": "conformance_suite_admins"
+    }
+
+  },
+  "user": {
+    "name": "George McIntosh",
+    "email": "george@elevenware.com"
+  }
+}
