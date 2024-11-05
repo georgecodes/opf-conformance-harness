@@ -14,8 +14,10 @@ services:
       - ADMIN_CLIENT_ID=conformance_suite_admin
       - ADMIN_CLIENT_SECRET=abcde12345
       - ADMIN_GROUP=conformance-admins
-      - USER_NAME=George McIntosh
-      - EMAIL=george@elevenware.com
+      - DEFAULT_USER_NAME=George McIntosh
+      - DEFAULT_EMAIL=george@elevenware.com
+      - ADMIN_USER_NAME=George McIntosh
+      - ADMIN_EMAIL=george.admin@elevenware.com
       - DEFAULT_PUBLIC_KEY=/etc/harness/keys/defaultProvider.public.key
       - DEFAULT_PRIVATE_KEY=/etc/harness/keys/defaultProvider.private.key
       - ADMIN_PUBLIC_KEY=/etc/harness/keys/adminProvider.public.key
