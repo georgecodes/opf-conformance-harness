@@ -16,6 +16,12 @@ services:
       - ADMIN_GROUP=conformance-admins
       - USER_NAME=George McIntosh
       - EMAIL=george@elevenware.com
+      - DEFAULT_PUBLIC_KEY=/etc/harness/keys/defaultProvider.public.key
+      - DEFAULT_PRIVATE_KEY=/etc/harness/keys/defaultProvider.private.key
+      - ADMIN_PUBLIC_KEY=/etc/harness/keys/adminProvider.public.key
+      - ADMIN_PRIVATE_KEY=/etc/harness/keys/adminProvider.private.key
+    volumes:
+        - ./signingKeys:/etc/harness/keys
   rproxy:
     image: nginx:latest
     ports:

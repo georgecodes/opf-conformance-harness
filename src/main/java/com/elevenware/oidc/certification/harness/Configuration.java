@@ -7,6 +7,9 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Map;
 
 @JsonDeserialize(using = ConfigurationDeserializer.class)
@@ -153,9 +156,29 @@ public class Configuration {
         config.adminGroup = System.getenv("ADMIN_GROUP");
         config.userName = System.getenv("USER_NAME");
         config.email = System.getenv("EMAIL");
+        String defaultPublicKey = System.getenv("DEFAULT_PUBLIC_KEY");
+        String defaultPrivateKey = System.getenv("DEFAULT_PRIVATE_KEY");
+        if(defaultPublicKey != null && defaultPrivateKey != null) {
+            config.defaultPublicKey = loadPem(defaultPublicKey);
+            config.defaultPrivateKey = loadPem(defaultPrivateKey);
+        }
+        String adminPublicKey = System.getenv("ADMIN_PUBLIC_KEY");
+        String adminPrivateKey = System.getenv("ADMIN_PRIVATE_KEY");
+        if(adminPublicKey != null && adminPrivateKey != null) {
+            config.adminPublicKey = loadPem(adminPublicKey);
+            config.adminPrivateKey = loadPem(adminPrivateKey);
+        }
         boolean useEnv = config.verify();
-        System.out.printf("Using environment variables: %s\n", useEnv);
         return config.verify() ? config : null;
+    }
+
+    private static String loadPem(String file) {
+        try {
+            String s = Files.readString(Path.of(file), StandardCharsets.UTF_8);
+            return s;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static Configuration defaultConfiguration() {
