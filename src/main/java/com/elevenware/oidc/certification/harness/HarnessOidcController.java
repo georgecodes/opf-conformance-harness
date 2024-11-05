@@ -29,12 +29,10 @@ public class HarnessOidcController {
 
     private final OIDCProvider defaultProvider;
     private final OIDCProvider adminProvider;
-    private final OauthUser user;
 
-    public HarnessOidcController(OIDCProvider defaultProvider, OIDCProvider adminProvider, OauthUser user) {
+    public HarnessOidcController(OIDCProvider defaultProvider, OIDCProvider adminProvider) {
         this.defaultProvider = defaultProvider;
         this.adminProvider = adminProvider;
-        this.user = user;
     }
 
     public void discovery(Context context) {
@@ -54,6 +52,7 @@ public class HarnessOidcController {
     }
 
     public void userinfo(Context context) {
+        OauthUser user = context.attribute("USER");
         context.json(Map.of(
                 "name", user.getName(),
                 "email", user.getEmail()
@@ -89,6 +88,7 @@ public class HarnessOidcController {
 
     public void frontChannelAuthorize(Context context) {
         OIDCProvider provider = context.attribute("PROVIDER");
+        OauthUser user = context.attribute("USER");
         Map<String, List<String>> params = context.queryParamMap();
         String authCode = RandomStringUtils.randomAlphanumeric(16);
         AuthorizationRequest authorizationRequest = AuthorizationRequest.builder()

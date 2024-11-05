@@ -9,6 +9,9 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.fasterxml.jackson.databind.node.IntNode;
 
 import java.io.IOException;
+import java.security.KeyPair;
+import java.security.PrivateKey;
+import java.security.PublicKey;
 
 public class ConfigurationDeserializer extends StdDeserializer<Configuration> {
 
@@ -19,37 +22,42 @@ public class ConfigurationDeserializer extends StdDeserializer<Configuration> {
     @Override
     public Configuration deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException, JacksonException {
         JsonNode node = jsonParser.getCodec().readTree(jsonParser);
-        JsonNode defaultProvider = node.get("providers").get("default");
-        JsonNode adminProvider = node.get("providers").get("admin");
-        JsonNode user = node.get("user");
         Configuration configuration = new Configuration();
-        configuration.setDefaultIssuer(defaultProvider.get("issuer").asText());
-        configuration.setAdminIssuer(adminProvider.get("issuer").asText());
-        configuration.setAdminGroup(adminProvider.get("group").asText());
-        configuration.setDefaultClientId(defaultProvider.get("clientId").asText());
-        configuration.setDefaultClientSecret(defaultProvider.get("clientSecret").asText());
-        configuration.setAdminClientId(adminProvider.get("clientId").asText());
-        configuration.setAdminClientSecret(adminProvider.get("clientSecret").asText());
-        configuration.setUserName(user.get("name").asText());
-        configuration.setEmail(user.get("email").asText());
-
-        processKeys(node, configuration);
-
+        Configuration.Provider defaultProvider = generateProvider(node.get("defaultProvider"));
+        configuration.setDefaultProvider(defaultProvider);
+        Configuration.Provider adminProvider = generateProvider(node.get("adminProvider"));
+        configuration.setAdminProvider(adminProvider);
         return configuration;
     }
 
-    private void processKeys(JsonNode node, Configuration configuration) {
-        JsonNode defaultProvider = node.get("providers").get("default");
-        JsonNode adminProvider = node.get("providers").get("admin");
-        if(defaultProvider.has("keys")) {
-            JsonNode keys = defaultProvider.get("keys");
-            configuration.setDefaultPublicKey(keys.get("public").asText());
-            configuration.setDefaultPrivateKey(keys.get("private").asText());
+    private Configuration.Provider generateProvider(JsonNode node) {
+        Configuration.Provider provider = new Configuration.Provider();
+        String issuer = node.get("issuer").asText();
+        String clientId = node.get("clientId").asText();
+        String clientSecret = node.get("clientSecret").asText();
+        JsonNode user = node.get("user");
+        String userName = user.get("name").asText();
+        String email = user.get("email").asText();
+        JsonNode group = node.get("group");
+        if(group != null) {
+            provider.setGroup(group.asText());
         }
-        if(adminProvider.has("keys")) {
-            JsonNode keys = adminProvider.get("keys");
-            configuration.setDefaultPublicKey(keys.get("public").asText());
-            configuration.setDefaultPrivateKey(keys.get("private").asText());
+        provider.setIssuer(issuer);
+        provider.setClientId(clientId);
+        provider.setClientSecret(clientSecret);
+        provider.setUserName(userName);
+        provider.setEmail(email);
+        processKeys(node, provider);
+        return provider;
+    }
+
+    private void processKeys(JsonNode node, Configuration.Provider configuration) {
+        if(node.has("keys")) {
+            JsonNode keys = node.get("keys");
+            PublicKey publicKey = KeyUtils.publicKeyFromPem(keys.get("public").asText());
+            PrivateKey privateKey = KeyUtils.privateKeyFromPem(keys.get("private").asText());
+            KeyPair keyPair = new KeyPair(publicKey, privateKey);
+            configuration.setKeyPair(keyPair);
         }
     }
 }

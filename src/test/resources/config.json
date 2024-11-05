@@ -1,20 +1,21 @@
 {
-  "providers": {
-    "default": {
+    "defaultProvider": {
       "issuer": "https://auth.conformance.elevenware.com",
       "clientId": "conformance_suite",
-      "clientSecret": "$2a$12$Cu/c/70j3JrjhiDOeHZkP.N/ID7lpyJoOqWIWJk8TUDQ4q2xyozP2"
+      "clientSecret": "$2a$12$Cu/c/70j3JrjhiDOeHZkP.N/ID7lpyJoOqWIWJk8TUDQ4q2xyozP2",
+      "user": {
+        "name": "George McIntosh",
+        "email": "george@elevenware.com"
+      }
     },
-    "admin": {
+    "adminProvider": {
       "issuer": "https://auth.admin.conformance.elevenware.com",
-        "clientId": "conformance_suite_admin",
-        "clientSecret": "$2a$12$Cu/c/70j3JrjhiDOeHZkP.N/ID7lpyJoOqWIWJk8TUDQ4q2xyozP2",
-        "group": "conformance_suite_admins"
+      "clientId": "conformance_suite_admin",
+      "clientSecret": "$2a$12$Cu/c/70j3JrjhiDOeHZkP.N/ID7lpyJoOqWIWJk8TUDQ4q2xyozP2",
+      "group": "conformance_suite_admins",
+      "user": {
+        "name": "George McIntosh",
+        "email": "george.admin@elevenware.com"
+      }
     }
-
-  },
-  "user": {
-    "name": "George McIntosh",
-    "email": "george@elevenware.com"
-  }
 }
