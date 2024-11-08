@@ -4,6 +4,7 @@ import com.elevenware.oidc4j.lib.grants.GrantType;
 import com.elevenware.oidc4j.lib.grants.GrantTypes;
 import com.elevenware.oidc4j.lib.provider.OAuthException;
 import com.elevenware.oidc4j.lib.provider.OIDCProvider;
+import com.elevenware.oidc4j.lib.provider.model.AuthorizationInitiationRequest;
 import com.elevenware.oidc4j.lib.provider.model.AuthorizationRequest;
 import com.elevenware.oidc4j.lib.provider.model.ClientSecretPost;
 import com.elevenware.oidc4j.lib.provider.model.OauthUser;
@@ -65,7 +66,7 @@ public class HarnessOidcController {
         String grantTypeId = context.formParam("grant_type");
         Map<String, List<String>> params = context.formParamMap();
         GrantType grantType = GrantTypes.byName(grantTypeId);
-        TokenRequest.TokenRequestBuilder tokenRequestBuilder = TokenRequest.builder()
+        TokenRequest.Builder tokenRequestBuilder = TokenRequest.builder()
                 .grantType(grantType)
                 .clientAuthentication(clientAuth);
         if(grantType == GrantTypes.CLIENT_CREDENTIALS) {
@@ -91,7 +92,7 @@ public class HarnessOidcController {
         OauthUser user = context.attribute("USER");
         Map<String, List<String>> params = context.queryParamMap();
         String authCode = RandomStringUtils.randomAlphanumeric(16);
-        AuthorizationRequest authorizationRequest = AuthorizationRequest.builder()
+        AuthorizationInitiationRequest authorizationRequest = AuthorizationInitiationRequest.builder()
                 .clientId(params.get("client_id").get(0))
                 .redirectUri(params.get("redirect_uri").get(0))
                 .responseType(params.get("response_type").get(0))
